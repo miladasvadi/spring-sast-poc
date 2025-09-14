@@ -1,0 +1,36 @@
+name: Spring SAST PoC
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run demo scan
+        run: |
+          mkdir -p data demo
+          python tools/make_demo_spring_project.py --out demo/demo-spring
+          python tools/prepass_spring.py --project-root demo/demo-spring --out-dir data
+          python tools/scan_intraprocedural.py --project demo/demo-spring --endpoints data/spring_endpoints.json --outdir data
+
+      - name: Upload SARIF report
+        uses: github/codeql-action/upload-sarif@v2
+        with:
+          sarif_file: data/findings.sarif
