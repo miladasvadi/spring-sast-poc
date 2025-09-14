@@ -596,7 +596,7 @@ def to_sarif(findings):
             "ruleId": f["ruleId"],
             "level": f.get("severity", "warning"),
             "message": {"text": f.get("message", "")},
-            "locations": [{"location": loc}],
+            "locations": [loc],
         })
 
     return {
