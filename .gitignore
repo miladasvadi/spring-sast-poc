@@ -2,7 +2,9 @@ __pycache__/
 *.pyc
 .venv/
 .env
-data/*.json
+data/findings.json
+data/spring_deps.json
+data/spring_endpoints.json
 data/*.sarif
 .vscode/
 .idea/
